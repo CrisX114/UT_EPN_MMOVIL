@@ -1,0 +1,85 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Registro de {{dataMes.usuario}}</ion-title>
+    <ion-buttons slot="end"
+      ><ion-icon (click)="closeModal()" name="close-circle"></ion-icon
+    ></ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-item href="#" class="ion-activated">
+      <ion-icon name="person" slot="start"></ion-icon>
+      <ion-label
+        >Nombre de Usuario:<br />
+        {{dataMes.usuario}}</ion-label
+      >
+    </ion-item>
+
+    <ion-item href="#">
+      <ion-icon name="information-circle" slot="start"></ion-icon>
+      <ion-label
+        >Fecha:<br />
+        {{dataMes.fecha}}</ion-label
+      >
+    </ion-item>
+    <ion-item>
+      <ion-icon name="timer" slot="start"></ion-icon>
+      <ion-label
+        >Número de Atrasos:<br />
+        {{dataMes.numAtrasos}}</ion-label
+      >
+    </ion-item>
+    <ion-item>
+      <ion-icon name="timer" slot="start"></ion-icon>
+      <ion-label
+        >Número de Salidas Tempranas:<br />
+        {{dataMes.numSalidasTempranas}}</ion-label
+      >
+    </ion-item>
+    <ion-item>
+      <ion-icon name="timer" slot="start"></ion-icon>
+      <ion-label
+        >Número de Faltas:<br />
+        {{dataMes.numFaltas}}</ion-label
+      >
+    </ion-item>
+    <ion-item>
+      <ion-icon name="timer" slot="start"></ion-icon>
+      <ion-label
+        >Número de Sin Salidas:<br />
+        {{dataMes.numSinSalidas}}</ion-label
+      >
+    </ion-item>
+    <ion-item>
+      <ion-icon name="timer" slot="start"></ion-icon>
+      <ion-label
+        >Número Total de Registros:<br />
+        {{dataMes.data.length}}</ion-label
+      >
+    </ion-item>
+    <ion-item class="ion-activated">
+      <ion-icon name="calendar" slot="start"></ion-icon>
+      <ion-label
+        >Horas Trabajadas en el mes:<br />
+        {{dataMes.horasTrabajadas}}</ion-label
+      >
+    </ion-item>
+    <ion-item class="ion-activated">
+      <ion-icon name="calendar" slot="start"></ion-icon>
+      <ion-label
+        >Horas Extra totales:<br />
+        {{dataMes.horasExtra}}</ion-label
+      >
+    </ion-item>
+    <ion-item class="ion-activated">
+      <ion-icon name="calendar" slot="start"></ion-icon>
+      <ion-label
+        >Horas Extra Justificadas:<br />
+        {{dataMes.horasExtraJustificadas}}</ion-label
+      >
+    </ion-item>
+  </ion-card>
+  <ion-button (click)="closeModal()">Atras</ion-button>
+</ion-content>
