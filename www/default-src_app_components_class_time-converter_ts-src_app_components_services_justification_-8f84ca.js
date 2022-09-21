@@ -164,7 +164,7 @@ class DataService {
         this.dataById$ = null;
         //se define el nombre de la colección que se leerá en el Cloud Firestore
         //se aplica un filtro de orden por fecha
-        this.datasCollection = this.afs.collection('registros', (ref) => ref.orderBy('hora', 'desc').limit(300));
+        this.datasCollection = this.afs.collection('registros', (ref) => ref.orderBy('hora', 'desc'));
     }
     //funcion que editará el campo justificaciones del registro cuando se crea una justificación
     onEditDataJust(edit, idJust) {
@@ -212,10 +212,7 @@ class DataService {
     //Se obtienen los documentos que coincidan con el argumento "userId" de la colección "registros"
     getDataId(userId) {
         this.datasCollectionById = this.afs.collection('registros', (ref) => {
-            return ref
-                .orderBy('hora', 'desc')
-                .where('idUsuario', '==', userId)
-                .limit(300);
+            return ref.orderBy('hora', 'desc').where('idUsuario', '==', userId);
         });
         //Se obtienen todos los usuarios
         this.dataById$ = this.datasCollectionById

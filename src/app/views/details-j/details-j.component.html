@@ -53,7 +53,12 @@
       </li>
       <li class="list-group-item" *ngIf="data.horasTrabajadas">
         Horas Trabajadas:
-        <h4 class="text-center">{{ data.horasTrabajadas }}</h4>
+        <h4 class="text-center">
+          {{ data.horasTrabajadas }}
+          <ng-container *ngIf="data.horario != '00:00'"
+            >/ {{ data.horario }}:00</ng-container
+          >
+        </h4>
       </li>
       <li
         class="list-group-item"
@@ -80,6 +85,7 @@
     type="button"
     class="btn btn-outline-warning m-1 d-print-none"
     (click)="goOnEditJustification()"
+    *ngIf="currentUserId == data.idUsuario"
   >
     Justificar
   </button>
@@ -113,8 +119,9 @@
           Horas Trabajadas Justificadas:
           <h4 class="text-center">{{ item.horaJustificada }}</h4>
         </li>
-        <li *ngIf="item.urlLink != ''">
-          Archivo: <a href="{{ item.urlLink }}" target="_blank">Ver </a>
+        <li class="list-group-item text-center" *ngIf="item.urlLink != ''">
+          Archivo de Justificación:
+          <a href="{{ item.urlLink }}" target="_blank">Ver </a>
         </li>
         <div *ngIf="isAdmin && item.idUsuario != currentUserId">
           <button

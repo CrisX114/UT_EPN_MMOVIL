@@ -13,5 +13,6 @@ export interface DataMes {
   numFaltas: number;
   numSalidasTempranas: number;
   numSinSalidas: number;
-  horario: string;
+  numDiaExtra: number;
+  horasDiaExtra: string;
 }

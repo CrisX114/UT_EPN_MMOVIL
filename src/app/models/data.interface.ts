@@ -17,4 +17,5 @@ export interface Data {
   temperatura?: string[];
   justificaciones?: string[];
   horasDeTrabajo: string;
+  horario?: string;
 }

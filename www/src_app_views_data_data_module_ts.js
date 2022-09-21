@@ -234,7 +234,7 @@ function DataComponent_div_0_div_23_Template(rf, ctx) { if (rf & 1) {
 function DataComponent_div_0_div_24_tr_11_ng_container_1_Template(rf, ctx) { if (rf & 1) {
     const _r32 = _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵgetCurrentView"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementContainerStart"](0);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](1, "th", 32);
+    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](1, "th", 33);
     _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](2);
     _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](3, "td", 27);
@@ -297,8 +297,8 @@ function DataComponent_div_0_div_24_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](6, "th", 22);
     _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](7, "Fecha");
     _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](8, "th", 23);
-    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](9, "Acciones");
+    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementStart"](8, "th", 32);
+    _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtext"](9, " Acciones ");
     _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵelementEnd"]();
@@ -518,30 +518,17 @@ class DataComponent extends _components_class_time_converter__WEBPACK_IMPORTED_M
         });
     }
     setHorasExtra() {
-        let horaExtra;
         this.data.forEach((item) => {
-            var _a;
             if (!item.horasExtra) {
-                horaExtra = '00:00:00';
-                item.horasExtra = horaExtra;
-                if (item.hora[1]) {
-                    (_a = this.user) === null || _a === void 0 ? void 0 : _a.forEach((itemUser) => {
-                        if (item.idUsuario == itemUser.uid) {
-                            if (itemUser.horasDeTrabajo != '00:00') {
-                                if (this.compareH(item.horasTrabajadas, this.addHoras(itemUser.horasDeTrabajo + ':00', '00:' + this.pref.toleranciaOut + ':00')) > 0) {
-                                    horaExtra = this.subtractHoras(item.horasTrabajadas, itemUser.horasDeTrabajo + ':00');
-                                    item.horasExtra = horaExtra;
-                                }
-                                if (this.compareH(item.horasTrabajadas, this.subtractHoras(itemUser.horasDeTrabajo + ':00', '00:' + this.pref.toleranciaIn + ':00')) < 0 &&
-                                    item.asistencia[0] != 'DIA EXTRA') {
-                                    item.asistencia.push('SALIDA TEMPRANA');
-                                }
-                            }
-                            else {
-                                item.horasExtra = horaExtra;
-                            }
-                        }
-                    });
+                item.horasExtra = '00:00:00';
+                if (item.hora[1] && item.horario != '00:00') {
+                    if (this.compareH(item.horasTrabajadas, this.addHoras(item.horario + ':00', '00:' + this.pref.toleranciaOut + ':00')) > 0) {
+                        item.horasExtra = this.subtractHoras(item.horasTrabajadas, item.horario + ':00');
+                    }
+                    if (this.compareH(item.horasTrabajadas, this.subtractHoras(item.horario + ':00', '00:' + this.pref.toleranciaIn + ':00')) < 0 &&
+                        item.asistencia[0] != 'DIA EXTRA') {
+                        item.asistencia.push('SALIDA TEMPRANA');
+                    }
                 }
             }
         });
@@ -549,16 +536,13 @@ class DataComponent extends _components_class_time_converter__WEBPACK_IMPORTED_M
     setHorasTrabajadas() {
         var _a;
         const tiempoActual = (Date.now() / 1000).toFixed();
-        let hora;
         (_a = this.data) === null || _a === void 0 ? void 0 : _a.forEach((item) => {
-            hora = '00:00:00';
             if (this.timeConverter(tiempoActual, 1) ==
                 this.timeConverter(item.hora[0]['seconds'], 1) &&
                 item.horasTrabajadas == '00:00:00' &&
                 item.asistencia[0] != 'FALTA') {
                 var seconds = parseInt(tiempoActual) - item.hora[0]['seconds'] + 18000;
-                hora = this.timeConverter(seconds, 2);
-                item.horasTrabajadas = hora;
+                item.horasTrabajadas = this.timeConverter(seconds, 2);
             }
             if (this.timeConverter(tiempoActual, 1) !=
                 this.timeConverter(item.hora[0]['seconds'], 1) &&
@@ -572,147 +556,144 @@ class DataComponent extends _components_class_time_converter__WEBPACK_IMPORTED_M
     setDataMes() {
         var _a;
         try {
-            let temp;
-            var existe;
-            this.dataMes = [];
-            let idUsuarios = [];
-            let fechaGuardando;
-            (_a = this.data) === null || _a === void 0 ? void 0 : _a.forEach((data) => {
-                var _a, _b;
-                temp = {
-                    fecha: '',
-                    idUsuario: '',
-                    data: [],
-                    horasTrabajadas: '',
-                    horasExtra: '',
-                    usuario: '',
-                    numAtrasos: 0,
-                    numFaltas: 0,
-                    numSalidasTempranas: 0,
-                    numSinSalidas: 0,
-                    horario: '0',
-                    horasTotalesTrabajo: '0',
-                    horasExtraJustificadas: '',
-                };
-                existe = false;
-                const fechaD = this.timeConverter(data.hora[0]['seconds'], 1).split('/');
-                const fechadata = fechaD[1] + '/' + fechaD[2];
-                if (fechaGuardando != fechadata) {
-                    fechaGuardando = fechadata;
-                    idUsuarios = [];
-                }
-                idUsuarios === null || idUsuarios === void 0 ? void 0 : idUsuarios.forEach((user) => {
-                    if (user == data.idUsuario) {
-                        existe = true;
+            if (!this.dataMes || this.dataMes.length == 0) {
+                let temp;
+                var existe;
+                this.dataMes = [];
+                let idUsuarios = [];
+                let fechaGuardando;
+                (_a = this.data) === null || _a === void 0 ? void 0 : _a.forEach((data) => {
+                    var _a;
+                    temp = {
+                        fecha: '',
+                        idUsuario: '',
+                        usuario: '',
+                        data: [],
+                        horasTrabajadas: '00:00:00',
+                        horasExtra: '00:00:00',
+                        horasTotalesTrabajo: '00:00:00',
+                        horasDiaExtra: '00:00:00',
+                        horasExtraJustificadas: '00:00:00',
+                        numAtrasos: 0,
+                        numFaltas: 0,
+                        numSalidasTempranas: 0,
+                        numSinSalidas: 0,
+                        numDiaExtra: 0,
+                    };
+                    existe = false;
+                    const fechaD = this.timeConverter(data.hora[0]['seconds'], 1).split('/');
+                    const fechadata = fechaD[1] + '/' + fechaD[2];
+                    if (fechaGuardando != fechadata) {
+                        fechaGuardando = fechadata;
+                        idUsuarios = [];
                     }
-                });
-                if (!existe) {
-                    (_a = this.user) === null || _a === void 0 ? void 0 : _a.forEach((user) => {
-                        if (user.uid == data.idUsuario) {
-                            temp.horario = user.horasDeTrabajo;
+                    idUsuarios === null || idUsuarios === void 0 ? void 0 : idUsuarios.forEach((user) => {
+                        if (user == data.idUsuario) {
+                            existe = true;
                         }
                     });
-                    idUsuarios.push(data.idUsuario);
-                    temp.usuario = data.usuario;
-                    temp.fecha = fechaGuardando;
-                    temp.idUsuario = data.idUsuario;
-                    temp.horasTrabajadas = '00:00:00';
-                    temp.horasTotalesTrabajo = '00:00:00';
-                    temp.horasExtra = '00:00:00';
-                    temp.horasExtraJustificadas = '00:00:00';
-                    temp.numAtrasos = 0;
-                    temp.numFaltas = 0;
-                    temp.numSalidasTempranas = 0;
-                    temp.numSinSalidas = 0;
-                    this.dataMes.push(temp);
-                }
-                (_b = this.dataMes) === null || _b === void 0 ? void 0 : _b.forEach((datames) => {
-                    var _a, _b;
-                    if (datames.fecha == fechaGuardando &&
-                        datames.idUsuario == data.idUsuario) {
-                        datames.data.push(data);
-                        if (datames.horario != '00:00') {
-                            if (data.asistencia.indexOf('ATRASO') >= 0) {
-                                datames.numAtrasos++;
-                            }
-                            if (data.asistencia.indexOf('SIN SALIDA') >= 0) {
-                                datames.numSinSalidas++;
-                            }
-                            if (data.asistencia.indexOf('FALTA') >= 0) {
-                                datames.numFaltas++;
-                            }
-                            if (data.asistencia[0] != 'DIA EXTRA') {
-                                if (this.compareH(data.horasTrabajadas, datames.horario + ':00') >= 0 ||
-                                    this.compareH(this.addHoras('00:' + this.pref.toleranciaIn + ':00', data.horasTrabajadas), datames.horario + ':00') >= 0) {
-                                    datames.horasTrabajadas = this.addHoras(datames.horasTrabajadas, datames.horario + ':00');
-                                    if (this.compareH(data.horasTrabajadas, datames.horario + ':00') >= 0) {
-                                        datames.horasExtra = this.addHoras(datames.horasExtra, this.subtractHoras(data.horasTrabajadas, datames.horario + ':00'));
+                    if (!existe) {
+                        idUsuarios.push(data.idUsuario);
+                        temp.usuario = data.usuario;
+                        temp.fecha = fechaGuardando;
+                        temp.idUsuario = data.idUsuario;
+                        this.dataMes.push(temp);
+                    }
+                    (_a = this.dataMes) === null || _a === void 0 ? void 0 : _a.forEach((datames) => {
+                        var _a, _b, _c;
+                        if (datames.fecha == fechaGuardando &&
+                            datames.idUsuario == data.idUsuario) {
+                            datames.data.push(data);
+                            if (data.horario != '00:00') {
+                                //cambio
+                                if (((_a = data.asistencia) === null || _a === void 0 ? void 0 : _a.indexOf('ATRASO')) >= 0) {
+                                    datames.numAtrasos++;
+                                }
+                                if (data.asistencia.indexOf('SIN SALIDA') >= 0) {
+                                    datames.numSinSalidas++;
+                                }
+                                if (data.asistencia.indexOf('FALTA') >= 0) {
+                                    datames.numFaltas++;
+                                }
+                                if (data.asistencia[0] != 'DIA EXTRA') {
+                                    if (this.compareH(data.horasTrabajadas, data.horario + ':00') >=
+                                        0 ||
+                                        this.compareH(this.addHoras('00:' + this.pref.toleranciaIn + ':00', data.horasTrabajadas), data.horario + ':00') >= 0) {
+                                        datames.horasTrabajadas = this.addHoras(datames.horasTrabajadas, data.horario + ':00');
+                                        if (this.compareH(data.horasTrabajadas, data.horario + ':00') >= 0) {
+                                            datames.horasExtra = this.addHoras(datames.horasExtra, this.subtractHoras(data.horasTrabajadas, data.horario + ':00'));
+                                        }
+                                    }
+                                    else {
+                                        if (data.asistencia.indexOf('FALTA') < 0 &&
+                                            data.horasTrabajadas != '00:00:00') {
+                                            const tiempoActual = (Date.now() / 1000).toFixed();
+                                            if (this.timeConverter(tiempoActual, 1) !=
+                                                this.timeConverter(data.hora[0]['seconds'], 1)) {
+                                                datames.numSalidasTempranas++;
+                                            }
+                                            if (data.justificaciones) {
+                                                (_b = data.justificaciones) === null || _b === void 0 ? void 0 : _b.forEach((justificacion) => {
+                                                    const justific = this.just.filter((just) => just.id == justificacion);
+                                                    if (justific[0].tipo == 'SALIDA_TEMPR' &&
+                                                        justific[0].status == 'ACEPTADO' &&
+                                                        justific[0].tipo) {
+                                                        datames.numSalidasTempranas -= 1;
+                                                        datames.horasTrabajadas = this.addHoras(datames.horasTrabajadas, justific[0].horaJustificada).toString();
+                                                    }
+                                                    else {
+                                                        datames.horasTrabajadas = this.addHoras(datames.horasTrabajadas, data.horasTrabajadas).toString();
+                                                    }
+                                                });
+                                            }
+                                            else {
+                                                datames.horasTrabajadas = this.addHoras(datames.horasTrabajadas, data.horasTrabajadas);
+                                            }
+                                        }
                                     }
                                 }
                                 else {
-                                    if (data.asistencia.indexOf('FALTA') < 0 &&
-                                        data.horasTrabajadas != '00:00:00') {
-                                        const tiempoActual = (Date.now() / 1000).toFixed();
-                                        if (this.timeConverter(tiempoActual, 1) !=
-                                            this.timeConverter(data.hora[0]['seconds'], 1)) {
-                                            datames.numSalidasTempranas++;
-                                        }
-                                        if (data.justificaciones) {
-                                            (_a = data.justificaciones) === null || _a === void 0 ? void 0 : _a.forEach((justificacion) => {
-                                                const justific = this.just.filter((just) => just.id == justificacion);
-                                                if (justific[0].tipo == 'SALIDA_TEMPR' &&
-                                                    justific[0].status == 'ACEPTADO' &&
-                                                    justific[0].tipo) {
-                                                    datames.numSalidasTempranas -= 1;
-                                                    datames.horasTrabajadas = this.addHoras(datames.horasTrabajadas, justific[0].horaJustificada).toString();
-                                                }
-                                                else {
-                                                    datames.horasTrabajadas = this.addHoras(datames.horasTrabajadas, data.horasTrabajadas).toString();
-                                                }
-                                            });
-                                        }
-                                        else {
-                                            datames.horasTrabajadas = this.addHoras(datames.horasTrabajadas, data.horasTrabajadas);
-                                        }
+                                    datames.numDiaExtra++;
+                                }
+                            }
+                            else {
+                                datames.horasTrabajadas = this.addHoras(datames.horasTrabajadas, data.horasTrabajadas);
+                            }
+                            datames.horasTotalesTrabajo = this.addHoras(datames.horasTotalesTrabajo, data.horario + ':00');
+                            if (data.asistencia[0] != 'DIA EXTRA') {
+                            }
+                            //gestion de justificaciones
+                            (_c = data.justificaciones) === null || _c === void 0 ? void 0 : _c.forEach((justificacion) => {
+                                const justific = this.just.filter((just) => just.id == justificacion);
+                                if (justific.length > 0) {
+                                    if (justific[0].tipo == 'DIA_EXTRA' &&
+                                        justific[0].status == 'ACEPTADO') {
+                                        datames.horasDiaExtra = this.addHoras(datames.horasDiaExtra, justific[0].horaJustificada).toString();
+                                    }
+                                    if (justific[0].tipo == 'ATRASO' &&
+                                        justific[0].status == 'ACEPTADO') {
+                                        datames.numAtrasos -= 1;
+                                    }
+                                    if (justific[0].tipo == 'HORAS_EXTRA' &&
+                                        justific[0].status == 'ACEPTADO') {
+                                        datames.horasExtraJustificadas = this.addHoras(datames.horasExtraJustificadas, justific[0].horaJustificada).toString();
+                                    }
+                                    if (justific[0].tipo == 'FALTA' &&
+                                        justific[0].status == 'ACEPTADO') {
+                                        datames.horasTrabajadas = this.addHoras(datames.horasTrabajadas, justific[0].horaJustificada).toString();
+                                        datames.numFaltas -= 1;
+                                    }
+                                    if (justific[0].tipo == 'SIN_SALIDA' &&
+                                        justific[0].status == 'ACEPTADO') {
+                                        datames.horasTrabajadas = this.addHoras(datames.horasTrabajadas, justific[0].horaJustificada).toString();
+                                        datames.numSinSalidas -= 1;
                                     }
                                 }
-                            }
+                            });
                         }
-                        else {
-                            datames.horasTrabajadas = this.addHoras(datames.horasTrabajadas, data.horasTrabajadas);
-                        }
-                        datames.horasTotalesTrabajo = this.addHoras(datames.horasTotalesTrabajo, datames.horario + ':00');
-                        //gestion de justificaciones
-                        (_b = data.justificaciones) === null || _b === void 0 ? void 0 : _b.forEach((justificacion) => {
-                            const justific = this.just.filter((just) => just.id == justificacion);
-                            if (justific.length > 0) {
-                                if (justific[0].tipo == 'DIA_EXTRA' &&
-                                    justific[0].status == 'ACEPTADO') {
-                                    datames.horasExtraJustificadas = this.addHoras(datames.horasExtraJustificadas, justific[0].horaJustificada).toString();
-                                }
-                                if (justific[0].tipo == 'ATRASO' &&
-                                    justific[0].status == 'ACEPTADO') {
-                                    datames.numAtrasos -= 1;
-                                }
-                                if (justific[0].tipo == 'HORAS_EXTRA' &&
-                                    justific[0].status == 'ACEPTADO') {
-                                    datames.horasExtraJustificadas = this.addHoras(datames.horasExtraJustificadas, justific[0].horaJustificada).toString();
-                                }
-                                if (justific[0].tipo == 'FALTA' &&
-                                    justific[0].status == 'ACEPTADO') {
-                                    datames.horasTrabajadas = this.addHoras(datames.horasTrabajadas, justific[0].horaJustificada).toString();
-                                    datames.numFaltas -= 1;
-                                }
-                                if (justific[0].tipo == 'SIN_SALIDA' &&
-                                    justific[0].status == 'ACEPTADO') {
-                                    datames.horasTrabajadas = this.addHoras(datames.horasTrabajadas, justific[0].horaJustificada).toString();
-                                    datames.numSinSalidas -= 1;
-                                }
-                            }
-                        });
-                    }
+                    });
                 });
-            });
+            }
         }
         catch (error) {
             console.log(error);
@@ -736,7 +717,7 @@ class DataComponent extends _components_class_time_converter__WEBPACK_IMPORTED_M
     }
 }
 DataComponent.ɵfac = function DataComponent_Factory(t) { return new (t || DataComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_13__.Router), _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdirectiveInject"](_components_services_user_service__WEBPACK_IMPORTED_MODULE_2__.UserService), _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdirectiveInject"](_components_services_data_service__WEBPACK_IMPORTED_MODULE_3__.DataService), _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdirectiveInject"](_components_services_justification_service__WEBPACK_IMPORTED_MODULE_4__.JustificationService), _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdirectiveInject"](src_app_components_services_auth_service__WEBPACK_IMPORTED_MODULE_5__.AuthService), _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdirectiveInject"](_ionic_angular__WEBPACK_IMPORTED_MODULE_14__.ModalController), _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdirectiveInject"](src_app_components_services_preference_service__WEBPACK_IMPORTED_MODULE_6__.PreferenceService)); };
-DataComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdefineComponent"]({ type: DataComponent, selectors: [["app-data"]], features: [_angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵInheritDefinitionFeature"]], decls: 1, vars: 1, consts: [[4, "ngIf"], [1, "row"], [1, "col"], [1, "form-group"], ["class", "form-floating m-1 d-print-none", 4, "ngIf"], [1, "input-group"], [1, "form-floating", "m-1", "d-print-none"], ["type", "text", "id", "floatingInput", "name", "filter2", "placeholder", "Buscar por Fecha...", 1, "form-control", 3, "ngModel", "ngModelChange"], ["for", "floatingInput"], ["class", "col", 4, "ngIf"], [1, "form-check", "form-check-inline"], ["type", "radio", "id", "inlineRadio1", "value", "1", 1, "form-check-input", 3, "ngModel", "ngModelChange", "click"], ["for", "inlineRadio1", 1, "form-check-label"], ["type", "radio", "id", "inlineRadio3", "value", "2", 1, "form-check-input", 3, "ngModel", "ngModelChange", "click"], ["for", "inlineRadio3", 1, "form-check-label"], [1, "col-xs-12"], ["class", "table-responsive", 4, "ngIf"], ["type", "text", "class", "form-control", "name", "filter1", "id", "floatingInput", "placeholder", "Buscar por Nombre...", 3, "ngModel", "ngModelChange", 4, "ngIf"], ["type", "text", "name", "filter1", "id", "floatingInput", "placeholder", "Buscar por Nombre...", 1, "form-control", 3, "ngModel", "ngModelChange"], ["type", "text", "id", "floatingInput", "name", "filter3", "placeholder", "Buscar por estado Asistencia...", 1, "form-control", 3, "ngModel", "ngModelChange"], [1, "table-responsive"], [1, "table", "table-hover", "table-bordered"], ["scope", "col", 1, "text-center"], ["scope", "col", 1, "text-center", "d-print-none"], ["class", "table-info", 4, "ngFor", "ngForOf"], [1, "table-info"], ["scope", "row"], [1, "text-center"], [4, "ngFor", "ngForOf"], ["role", "group", 1, "bnt-group", "text-center", "d-print-none"], ["color", "secondary", "size", "small", 3, "click"], [1, "btn", "btn-primary", "d-print-none", "m-2", 3, "disabled", "click"], ["scope", "row", 1, "text-center"]], template: function DataComponent_Template(rf, ctx) { if (rf & 1) {
+DataComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵdefineComponent"]({ type: DataComponent, selectors: [["app-data"]], features: [_angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵInheritDefinitionFeature"]], decls: 1, vars: 1, consts: [[4, "ngIf"], [1, "row"], [1, "col"], [1, "form-group"], ["class", "form-floating m-1 d-print-none", 4, "ngIf"], [1, "input-group"], [1, "form-floating", "m-1", "d-print-none"], ["type", "text", "id", "floatingInput", "name", "filter2", "placeholder", "Buscar por Fecha...", 1, "form-control", 3, "ngModel", "ngModelChange"], ["for", "floatingInput"], ["class", "col", 4, "ngIf"], [1, "form-check", "form-check-inline"], ["type", "radio", "id", "inlineRadio1", "value", "1", 1, "form-check-input", 3, "ngModel", "ngModelChange", "click"], ["for", "inlineRadio1", 1, "form-check-label"], ["type", "radio", "id", "inlineRadio3", "value", "2", 1, "form-check-input", 3, "ngModel", "ngModelChange", "click"], ["for", "inlineRadio3", 1, "form-check-label"], [1, "col-xs-16"], ["class", "table-responsive", 4, "ngIf"], ["type", "text", "class", "form-control", "name", "filter1", "id", "floatingInput", "placeholder", "Buscar por Nombre...", 3, "ngModel", "ngModelChange", 4, "ngIf"], ["type", "text", "name", "filter1", "id", "floatingInput", "placeholder", "Buscar por Nombre...", 1, "form-control", 3, "ngModel", "ngModelChange"], ["type", "text", "id", "floatingInput", "name", "filter3", "placeholder", "Buscar por estado Asistencia...", 1, "form-control", 3, "ngModel", "ngModelChange"], [1, "table-responsive"], [1, "table", "table-hover", "table-bordered"], ["scope", "col", 1, "text-center"], ["scope", "col", 1, "text-center", "d-print-none"], ["class", "table-info", 4, "ngFor", "ngForOf"], [1, "table-info"], ["scope", "row"], [1, "text-center"], [4, "ngFor", "ngForOf"], ["role", "group", 1, "bnt-group", "text-center", "d-print-none"], ["color", "secondary", "size", "small", 3, "click"], [1, "btn", "btn-primary", "d-print-none", "m-2", 3, "disabled", "click"], ["scope", "col", 1, "col-3", "text-center", "d-print-none"], ["scope", "row", 1, "text-center"]], template: function DataComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵtemplate"](0, DataComponent_div_0_Template, 25, 7, "div", 0);
     } if (rf & 2) {
         _angular_core__WEBPACK_IMPORTED_MODULE_11__["ɵɵproperty"]("ngIf", ctx.isLogged && ctx.data && ctx.user);

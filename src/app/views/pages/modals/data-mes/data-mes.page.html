@@ -55,6 +55,13 @@
     <ion-item>
       <ion-icon name="timer" slot="start"></ion-icon>
       <ion-label
+        >Número de Días Extras:<br />
+        {{dataMes.numDiaExtra}}</ion-label
+      >
+    </ion-item>
+    <ion-item>
+      <ion-icon name="timer" slot="start"></ion-icon>
+      <ion-label
         >Número Total de Registros:<br />
         {{dataMes.data.length}}</ion-label
       >
@@ -63,21 +70,21 @@
       <ion-icon name="calendar" slot="start"></ion-icon>
       <ion-label
         >Horas Trabajadas en el mes:<br />
-        {{dataMes.horasTrabajadas}}</ion-label
+        {{dataMes.horasTrabajadas}}/{{ dataMes.horasTotalesTrabajo }}</ion-label
       >
     </ion-item>
     <ion-item class="ion-activated">
       <ion-icon name="calendar" slot="start"></ion-icon>
       <ion-label
-        >Horas Extra totales:<br />
-        {{dataMes.horasExtra}}</ion-label
+        >Horas en Días Extra:<br />
+        {{dataMes.horasDiaExtra}}</ion-label
       >
     </ion-item>
     <ion-item class="ion-activated">
       <ion-icon name="calendar" slot="start"></ion-icon>
       <ion-label
-        >Horas Extra Justificadas:<br />
-        {{dataMes.horasExtraJustificadas}}</ion-label
+        >Horas Extra Justificadas/Total:<br />
+        {{dataMes.horasExtraJustificadas}}/{{dataMes.horasExtra}}</ion-label
       >
     </ion-item>
   </ion-card>

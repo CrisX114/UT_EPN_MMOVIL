@@ -28,7 +28,7 @@ export class DataService {
     //se define el nombre de la colección que se leerá en el Cloud Firestore
     //se aplica un filtro de orden por fecha
     this.datasCollection = this.afs.collection<Data>('registros', (ref) =>
-      ref.orderBy('hora', 'desc').limit(300)
+      ref.orderBy('hora', 'desc')
     );
   }
 
@@ -77,10 +77,7 @@ export class DataService {
   //Se obtienen los documentos que coincidan con el argumento "userId" de la colección "registros"
   getDataId(userId: string): void {
     this.datasCollectionById = this.afs.collection<Data>('registros', (ref) => {
-      return ref
-        .orderBy('hora', 'desc')
-        .where('idUsuario', '==', userId)
-        .limit(300);
+      return ref.orderBy('hora', 'desc').where('idUsuario', '==', userId);
     });
     //Se obtienen todos los usuarios
     this.dataById$ = this.datasCollectionById

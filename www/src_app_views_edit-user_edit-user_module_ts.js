@@ -359,6 +359,8 @@ class EditUserComponent {
             }
             delete user.horario;
             this.userSvc.onUpdateUser(user, userId);
+            this.preferences.puedeActualizarUsuarios = true;
+            this.preferenceSvc.onSavePreference(this.preferences);
             this.message = 'Datos guardados correctamente';
             this.modal.open(ad, { size: 'lg' });
             this.userForm.reset();
