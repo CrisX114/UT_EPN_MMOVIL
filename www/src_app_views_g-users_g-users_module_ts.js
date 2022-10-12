@@ -184,17 +184,24 @@ class GUsuariosComponent {
     //función que se ejecuta cuando se da click en "borrar"
     //se envia, al servicio userService, el id del usuario a borrar
     onGoToDelete() {
+        if (this.userDelete.idHuella) {
+            this.preferences.idHuellaAccion = this.userDelete.idHuella;
+            this.preferences.puedeEliminar = true;
+        }
+        else {
+            this.preferences.puedeCrear = false;
+        }
+        this.preferenceSvc.onSavePreference(this.preferences);
         this.userSvc.onDeleteUser(this.userDelete.uid);
-        this.preferences.puedeEliminar = true;
-        this.preferences.idHuellaAccion = this.userDelete.idHuella;
         this.userDelete = null;
+        this.modal.dismissAll();
     }
     onGoToNew() {
         this.router.navigate(['new']);
     }
     onClickModal(contents, user) {
-        this.modal.open(contents, { size: 'lg' });
         this.userDelete = user;
+        this.modal.open(contents, { size: 'lg' });
     }
 }
 GUsuariosComponent.ɵfac = function GUsuariosComponent_Factory(t) { return new (t || GUsuariosComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_3__.Router), _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_components_services_user_service__WEBPACK_IMPORTED_MODULE_0__.UserService), _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_components_services_preference_service__WEBPACK_IMPORTED_MODULE_1__.PreferenceService), _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_ng_bootstrap_ng_bootstrap__WEBPACK_IMPORTED_MODULE_4__.NgbModal)); };

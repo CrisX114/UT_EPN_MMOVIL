@@ -27,6 +27,7 @@ export class JustificComponent extends TimeConverter {
   message: string;
   flag: boolean;
   isAdmin: boolean;
+  motivoR: string = '';
   selected: String = '';
   filterSelected: String = '';
 
@@ -115,14 +116,21 @@ export class JustificComponent extends TimeConverter {
 
   //en el caso de que se de click en el botón "Rechazar"
   //su status cambiará a RECHAZADO
-  onReject(item: Justification, ad: any) {
+  onReject(ad: any) {
     try {
-      this.justSvc.onReject(item);
+      this.just.motivoR = this.motivoR;
+      this.justSvc.onReject(this.just);
       this.modal.dismissAll();
       this.message = 'Datos guardados correctamente!';
       this.modal.open(ad, { size: 'lg' });
     } catch (error) {}
   }
+
+  onClickModalReject(item: Justification, content: any) {
+    this.just = item;
+    this.modal.open(content, { size: 'lg' });
+  }
+
   getAdmin() {
     //se obtiene el usuario autenticado mediante una suscripción al observable del servicio authService
     this.authSvc.currentUser$.subscribe((data) => {

@@ -224,8 +224,17 @@ class DetailsComponent {
         var _a;
         return (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__awaiter)(this, void 0, void 0, function* () {
             try {
+                if (this.user.idHuella) {
+                    this.preferences.idHuellaAccion = this.user.idHuella;
+                    this.preferences.puedeEliminar = true;
+                }
+                else {
+                    this.preferences.puedeCrear = false;
+                }
+                this.preferenceSvc.onSavePreference(this.preferences);
                 yield this.userSvc.onDeleteUser((_a = this.user) === null || _a === void 0 ? void 0 : _a.uid);
-                alert('Deleted');
+                alert('Eliminado');
+                this.modal.dismissAll();
                 this.onGoBackToList();
             }
             catch (err) {
